@@ -3,7 +3,8 @@ import {Text} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {colors} from '../theme/colors';
-import {DiscoverScreen} from '../screens/DiscoverScreen';
+import {AlibiAnalyzerScreen} from '../screens/AlibiAnalyzerScreen';
+import {SavedAnalysesScreen} from '../screens/SavedAnalysesScreen';
 import {DiscoveryDetailScreen} from '../screens/DiscoveryDetailScreen';
 import {DossierScreen} from '../screens/DossierScreen';
 import {CasesScreen} from '../screens/CasesScreen';
@@ -16,7 +17,7 @@ import {CompletedChallengesScreen} from '../screens/CompletedChallengesScreen';
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 const icons: {[key: string]: string} = {
-  Discover: '◉',
+  Analyzer: '◉',
   Dossier: '▤',
   Cases: '▱',
   Missing: '▣',
@@ -41,7 +42,7 @@ function Tabs() {
           <Text style={{color, fontSize: 20}}>{icons[route.name]}</Text>
         ),
       })}>
-      <Tab.Screen name="Discover" component={DiscoverScreen} />
+      <Tab.Screen name="Analyzer" component={AlibiAnalyzerScreen} />
       <Tab.Screen name="Dossier" component={DossierScreen} />
       <Tab.Screen name="Cases" component={CasesScreen} />
       <Tab.Screen name="Missing" component={MissingScreen} />
@@ -60,6 +61,7 @@ export function AppNavigator() {
       <Stack.Screen name="Home" component={Tabs} />
       <Stack.Screen name="DiscoveryDetail" component={DiscoveryDetailScreen} />
       <Stack.Screen name="Saved" component={SavedScreen} />
+      <Stack.Screen name="SavedAnalyses" component={SavedAnalysesScreen} />
       <Stack.Screen name="DeductionLab" component={DeductionLabScreen} />
       <Stack.Screen
         name="CompletedChallenges"

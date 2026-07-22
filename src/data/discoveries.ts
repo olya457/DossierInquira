@@ -1,4 +1,3 @@
-// Generated from the complete supplied content file.
 export const discoveries = [
   {
     id: 'cafe-central',

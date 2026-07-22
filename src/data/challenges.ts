@@ -1,4 +1,3 @@
-// Generated from the complete supplied content file.
 export const challenges = [
   {
     id: 'the-five-minute-expert',
