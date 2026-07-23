@@ -4,9 +4,16 @@ import {useFocusEffect} from '@react-navigation/native';
 import {Screen} from '../components/Screen';
 import {Card, Chip, Subtitle, Title} from '../components/ui';
 import {colors} from '../theme/colors';
-import {readSavedAnalyses, SavedAnalysis, writeSavedAnalyses} from '../data/alibi';
+import type {SavedAnalysis} from '../data/alibi';
+import {
+  readSavedAnalyses,
+  writeSavedAnalyses,
+} from '../services/storage/alibiStorage';
+import type {AnalysisScreenProps} from '../navigation/types';
 
-export function SavedAnalysesScreen({navigation}: any) {
+export function SavedAnalysesScreen({
+  navigation,
+}: AnalysisScreenProps<'SavedAnalyses'>) {
   const [items, setItems] = useState<SavedAnalysis[]>([]);
   useFocusEffect(useCallback(() => {readSavedAnalyses().then(setItems).catch(() => setItems([]));}, []));
   const remove = async (id: string) => {const next = items.filter(item => item.id !== id); setItems(next); await writeSavedAnalyses(next);};
@@ -17,7 +24,7 @@ export function SavedAnalysesScreen({navigation}: any) {
       <View style={s.top}><Text style={s.title}>Suspect · {item.input.incidentLocation}</Text><Text style={s.badge}>{item.result.title}</Text></View>
       <Text style={s.meta}>{new Date(item.createdAt).toLocaleString()}</Text>
       <Text style={s.meta}>Confidence: <Text style={s.bold}>{item.result.confidence ?? '—'}%</Text>   Timeline Gap: <Text style={s.gap}>{item.result.gap >= 0 ? '+' : ''}{item.result.gap} min</Text></Text>
-      <View style={s.actions}><Pressable style={s.button} onPress={() => navigation.navigate('Home', {screen:'Analyzer'})}><Text style={s.buttonText}>Edit</Text></Pressable><Pressable style={s.button} onPress={() => Share.share({message:`${item.result.title} — ${item.result.confidence ?? '—'}% confidence`})}><Text style={s.buttonText}>Share</Text></Pressable><Pressable style={[s.button,s.delete]} onPress={() => remove(item.id)}><Text style={s.deleteText}>Delete</Text></Pressable></View>
+      <View style={s.actions}><Pressable style={s.button} onPress={() => navigation.navigate('Analyzer')}><Text style={s.buttonText}>Edit</Text></Pressable><Pressable style={s.button} onPress={() => Share.share({message:`${item.result.title} — ${item.result.confidence ?? '—'}% confidence`})}><Text style={s.buttonText}>Share</Text></Pressable><Pressable style={[s.button,s.delete]} onPress={() => remove(item.id)}><Text style={s.deleteText}>Delete</Text></Pressable></View>
     </Card>)}
   </Screen>;
 }

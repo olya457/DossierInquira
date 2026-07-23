@@ -7,9 +7,14 @@ import {discoveries} from '../data/discoveries';
 import {getDiscoveryImage} from '../assets/discoveryImages';
 import {useSaved} from '../state/SavedContext';
 import {colors} from '../theme/colors';
-export function DiscoveryDetailScreen({route, navigation}: any) {
+import type {DossierScreenProps} from '../navigation/types';
+
+export function DiscoveryDetailScreen({
+  route,
+  navigation,
+}: DossierScreenProps<'DiscoveryDetail'>) {
   const item =
-    discoveries.find(x => x.id === route.params?.id) || discoveries[0];
+    discoveries.find(x => x.id === route.params.id) ?? discoveries[0];
   const {isSaved, toggleSaved} = useSaved();
   const saved = isSaved(item.id);
   return (
@@ -43,7 +48,7 @@ export function DiscoveryDetailScreen({route, navigation}: any) {
           <Text style={s.body}>{item.historicalContext}</Text>
         </Card>
       </AnimatedEntrance>
-      <View style={{marginTop: 18}}>
+      <View style={s.shareAction}>
         <GradientButton
           label="↗ Share this discovery"
           onPress={() =>
@@ -57,6 +62,7 @@ export function DiscoveryDetailScreen({route, navigation}: any) {
   );
 }
 const s = StyleSheet.create({
+  shareAction: {marginTop: 18},
   image: {height: 190, width: '100%', borderRadius: 23, marginVertical: 16},
   location: {color: colors.yellow, fontWeight: '700', marginVertical: 10},
   box: {marginTop: 24, marginBottom: 10},

@@ -5,30 +5,37 @@ import {AnimatedEntrance} from '../components/AnimatedEntrance';
 import {Card, Chip, GradientButton, Subtitle, Title} from '../components/ui';
 import {cases} from '../data/cases';
 import {colors} from '../theme/colors';
-const choices = ['True', 'Fake', 'Unclear'];
-export function CaseDetailScreen({route, navigation}: any) {
-  const c = cases.find(x => x.id === route.params?.id) || cases[0];
+import type {ClueAnswer} from '../domain/cases';
+import type {CasesScreenProps} from '../navigation/types';
+
+const choices: readonly ClueAnswer[] = ['True', 'Fake', 'Unclear'];
+
+export function CaseDetailScreen({
+  route,
+  navigation,
+}: CasesScreenProps<'CaseDetail'>) {
+  const c = cases.find(x => x.id === route.params.id) ?? cases[0];
   const [examining, setExamining] = useState(false);
-  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [answers, setAnswers] = useState<Record<number, ClueAnswer>>({});
   const [checked, setChecked] = useState(false);
   if (checked)
-    return (
+    {return (
       <Screen>
         <Text style={s.check}>✓</Text>
         <Title>Case Solved!</Title>
         <Subtitle>Every clue filed correctly. Nicely done, detective.</Subtitle>
-        <Card style={{marginTop: 22}}>
+        <Card style={s.solutionCard}>
           <Text style={s.label}>THE SOLUTION</Text>
           <Text style={s.body}>{c.solution}</Text>
         </Card>
-        <View style={{marginTop: 18}}>
+        <View style={s.solutionAction}>
           <GradientButton
             label="All cases"
             onPress={() => navigation.goBack()}
           />
         </View>
       </Screen>
-    );
+    );}
   return (
     <Screen>
       <Pressable onPress={() => navigation.goBack()}>
@@ -36,7 +43,7 @@ export function CaseDetailScreen({route, navigation}: any) {
       </Pressable>
       {!examining ? (
         <AnimatedEntrance>
-          <View style={{marginTop: 16}}>
+          <View style={s.caseIntro}>
             <Chip active>● {c.difficulty}</Chip>
             <Title>{c.title}</Title>
             <Card style={s.card}>
@@ -83,6 +90,9 @@ export function CaseDetailScreen({route, navigation}: any) {
   );
 }
 const s = StyleSheet.create({
+  solutionCard: {marginTop: 22},
+  solutionAction: {marginTop: 18},
+  caseIntro: {marginTop: 16},
   card: {marginVertical: 8},
   label: {
     color: colors.yellow,

@@ -5,13 +5,14 @@ import {AnimatedEntrance} from '../components/AnimatedEntrance';
 import {Card, GradientButton, Title} from '../components/ui';
 import {missingWords} from '../data/missingWords';
 import {colors} from '../theme/colors';
+import {evaluateMissingWord} from '../domain/missingWords/evaluateMissingWord';
 export function MissingScreen() {
   const [index, setIndex] = useState(0);
   const [input, setInput] = useState('');
   const [result, setResult] = useState<boolean | null>(null);
   const [hint, setHint] = useState(false);
   const p = missingWords[index];
-  const submit = () => setResult(input.trim().toLowerCase() === p.answer);
+  const submit = () => setResult(evaluateMissingWord(input, p.answer));
   const next = () => {
     setIndex((index + 1) % missingWords.length);
     setInput('');
@@ -67,7 +68,7 @@ export function MissingScreen() {
             <Pressable onPress={() => setHint(true)} style={s.hintBtn}>
               <Text style={s.white}>Hint</Text>
             </Pressable>
-            <View style={{flex: 1}}>
+            <View style={s.submitAction}>
               <GradientButton label="Submit Answer" onPress={submit} />
             </View>
           </View>
@@ -80,6 +81,7 @@ export function MissingScreen() {
   );
 }
 const s = StyleSheet.create({
+  submitAction: {flex: 1},
   stats: {flexDirection: 'row', gap: 8, marginVertical: 20},
   stat: {flex: 1, alignItems: 'center', padding: 12},
   green: {color: colors.green, fontSize: 18, fontWeight: '800'},

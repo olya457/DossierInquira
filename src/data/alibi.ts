@@ -1,5 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 export type EvidenceLevel = 'Low' | 'Medium' | 'High';
 export type Verification = 'Unverified' | 'Partially Verified' | 'Verified';
 export type AlibiInput = {
@@ -43,8 +41,6 @@ export type SavedAnalysis = {
   input: AlibiInput;
   result: AlibiResult;
 };
-
-export const ALIBI_STORAGE_KEY = 'dossier:saved-alibi-analyses';
 
 export const defaultAlibiInput: AlibiInput = {
   incidentTime: '8:20 PM',
@@ -131,17 +127,4 @@ export function analyzeAlibi(input: AlibiInput): AlibiResult {
     weakest: 'Evidence is unverified',
     note: 'The margin is razor-thin. A small change in route or delay could tip this either way — gather firmer evidence before concluding.',
   };
-}
-
-export async function readSavedAnalyses(): Promise<SavedAnalysis[]> {
-  const value = await AsyncStorage.getItem(ALIBI_STORAGE_KEY);
-  if (!value) {
-    return [];
-  }
-  const parsed = JSON.parse(value);
-  return Array.isArray(parsed) ? parsed : [];
-}
-
-export async function writeSavedAnalyses(items: SavedAnalysis[]) {
-  await AsyncStorage.setItem(ALIBI_STORAGE_KEY, JSON.stringify(items));
 }

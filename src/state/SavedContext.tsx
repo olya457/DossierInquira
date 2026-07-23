@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {
   createContext,
   useCallback,
@@ -7,8 +6,10 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-
-const STORAGE_KEY = 'dossier:saved-discoveries';
+import {
+  readSavedDiscoveryIds,
+  writeSavedDiscoveryIds,
+} from '../services/storage/savedDiscoveriesStorage';
 
 type SavedContextValue = {
   savedIds: string[];
@@ -24,16 +25,12 @@ export function SavedProvider({children}: {children: React.ReactNode}) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    AsyncStorage.getItem(STORAGE_KEY)
-      .then(value => {
-        if (value) {
-          const parsed = JSON.parse(value);
-          if (Array.isArray(parsed)) {
-            setSavedIds(parsed.filter(id => typeof id === 'string'));
-          }
-        }
+    readSavedDiscoveryIds()
+      .then(setSavedIds)
+      .catch(error => {
+        console.warn('Unable to restore saved discoveries', error);
+        setSavedIds([]);
       })
-      .catch(() => setSavedIds([]))
       .finally(() => setReady(true));
   }, []);
 
@@ -42,7 +39,9 @@ export function SavedProvider({children}: {children: React.ReactNode}) {
       const next = current.includes(id)
         ? current.filter(savedId => savedId !== id)
         : [...current, id];
-      AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next)).catch(() => {});
+      writeSavedDiscoveryIds(next).catch(error => {
+        console.warn('Unable to save discoveries', error);
+      });
       return next;
     });
   }, []);

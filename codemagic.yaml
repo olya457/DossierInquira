@@ -1,11 +1,14 @@
 workflows:
-  sample-workflow:
-    name: Dossier Inquira
+  dossier-inquira-ios:
+    name: Dossier Inquira · iOS release
     max_build_duration: 120
     instance_type: mac_mini_m2
     integrations:
       app_store_connect: Dossier Inquira
     environment:
+      node: 22
+      xcode: latest
+      cocoapods: default
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.pretvinsncs.inarentiersirst
@@ -17,25 +20,25 @@ workflows:
     scripts:
       - name: Install node modules
         script: |
-          npm install
+          corepack enable
+          pnpm install --frozen-lockfile
+      - name: Verify application code
+        script: |
+          pnpm typecheck
+          pnpm lint
+          pnpm test --runInBand
       - name: Install CocoaPods dependencies
         script: |
           cd ios && pod install
-      - name: Set up provisioning profile settings on  Xcode project
+      - name: Configure Xcode signing
         script: |
           cd ios
           xcode-project use-profiles
       - name: Increment build number
         script: |
-          #!/bin/sh
           cd $CM_BUILD_DIR/ios
           LATEST_BUILD_NUMBER=$(app-store-connect get-latest-app-store-build-number "$APP_STORE_APPLE_ID")
           agvtool new-version -all $(($LATEST_BUILD_NUMBER + 1))
-      - name: Set Info.plist values
-        script: |
-          PLIST=$CM_BUILD_DIR/ios/AwesomeProject/Info.plist
-          PLIST_BUDDY=/usr/libexec/PlistBuddy
-          $PLIST_BUDDY -c "Add :ITSAppUsesNonExemptEncryption bool false" $PLIST
       - name: Build ipa for distribution
         script: |
           xcode-project build-ipa \

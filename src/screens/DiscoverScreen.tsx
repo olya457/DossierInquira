@@ -15,6 +15,7 @@ import {colors} from '../theme/colors';
 import {discoveries} from '../data/discoveries';
 import {getDiscoveryImage} from '../assets/discoveryImages';
 import {useSaved} from '../state/SavedContext';
+import type {DossierScreenProps} from '../navigation/types';
 
 const categories = [
   'All',
@@ -25,7 +26,7 @@ const categories = [
   'Invention',
 ];
 
-export function DiscoverScreen({navigation}: any) {
+export function DiscoverScreen({navigation}: DossierScreenProps<'Discover'>) {
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('All');
   const {savedIds, isSaved, toggleSaved} = useSaved();
@@ -73,7 +74,7 @@ export function DiscoverScreen({navigation}: any) {
           />
           <View style={s.shade} />
           <Chip active>★ CASE OF THE WEEK</Chip>
-          <View style={{flex: 1}} />
+          <View style={s.heroSpacer} />
           <Text style={s.heroTitle}>The Vanishing Recipe</Text>
           <Text style={s.heroSub}>Tap to start investigating →</Text>
         </Pressable>
@@ -129,6 +130,7 @@ export function DiscoverScreen({navigation}: any) {
   );
 }
 const s = StyleSheet.create({
+  heroSpacer: {flex: 1},
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',

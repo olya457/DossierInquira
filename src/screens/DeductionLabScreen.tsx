@@ -3,6 +3,7 @@ import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import {Screen} from '../components/Screen';
 import {Card, Chip, GradientButton, Subtitle, Title} from '../components/ui';
 import {colors} from '../theme/colors';
+import type {CasesScreenProps} from '../navigation/types';
 
 const factors = [
   {name: 'Source reliability', description: 'How trustworthy is the source?'},
@@ -11,7 +12,9 @@ const factors = [
   {name: 'Consistency', description: 'Does it fit the timeline?'},
 ];
 
-export function DeductionLabScreen({navigation}: any) {
+export function DeductionLabScreen({
+  navigation,
+}: CasesScreenProps<'DeductionLab'>) {
   const [tab, setTab] = useState<'confidence' | 'cipher'>('confidence');
   const [scores, setScores] = useState([65, 50, 40, 55]);
   const [message, setMessage] = useState('Meet at the bakery at dawn');
@@ -93,7 +96,10 @@ export function DeductionLabScreen({navigation}: any) {
                 </Pressable>
                 <View style={styles.track}>
                   <View
-                    style={[styles.fill, {width: `${scores[index]}%`} as any]}
+                    style={[
+                      styles.fill,
+                      {width: `${scores[index]}%` as `${number}%`},
+                    ]}
                   />
                 </View>
                 <Pressable

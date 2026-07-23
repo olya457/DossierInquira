@@ -7,8 +7,9 @@ import {Card, Chip, Subtitle, Title} from '../components/ui';
 import {discoveries} from '../data/discoveries';
 import {useSaved} from '../state/SavedContext';
 import {colors} from '../theme/colors';
+import type {DossierScreenProps} from '../navigation/types';
 
-export function SavedScreen({navigation}: any) {
+export function SavedScreen({navigation}: DossierScreenProps<'Saved'>) {
   const {savedIds, toggleSaved} = useSaved();
   const savedItems = discoveries.filter(item => savedIds.includes(item.id));
 

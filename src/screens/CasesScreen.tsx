@@ -5,7 +5,10 @@ import {AnimatedEntrance} from '../components/AnimatedEntrance';
 import {Card, Chip, Subtitle, Title} from '../components/ui';
 import {cases} from '../data/cases';
 import {colors} from '../theme/colors';
-export function CasesScreen({navigation}: any) {
+import {CaseCard} from '../components/dossier/CaseCard';
+import type {CasesScreenProps} from '../navigation/types';
+
+export function CasesScreen({navigation}: CasesScreenProps<'Cases'>) {
   return (
     <Screen>
       <View style={s.row}>
@@ -33,16 +36,10 @@ export function CasesScreen({navigation}: any) {
       </View>
       {cases.map((c, i) => (
         <AnimatedEntrance key={c.id} delay={i * 80}>
-          <Pressable
-            onPress={() => navigation.navigate('CaseDetail', {id: c.id})}>
-            <Card style={s.card}>
-              <Text style={s.title}>{c.title}</Text>
-              <Text style={s.body}>{c.story}</Text>
-              <Text style={s.meta}>
-                ● {c.difficulty}　 {c.category}　 ◷ {c.time}
-              </Text>
-            </Card>
-          </Pressable>
+          <CaseCard
+            investigationCase={c}
+            onPress={() => navigation.navigate('CaseDetail', {id: c.id})}
+          />
         </AnimatedEntrance>
       ))}
     </Screen>
@@ -57,13 +54,4 @@ const s = StyleSheet.create({
   yellow: {color: colors.yellow, fontSize: 18, fontWeight: '800'},
   coral: {color: colors.coral, fontSize: 18, fontWeight: '800'},
   small: {color: colors.muted, fontSize: 10, marginTop: 4},
-  card: {marginBottom: 12},
-  title: {
-    fontFamily: 'Georgia',
-    fontWeight: '700',
-    fontSize: 18,
-    color: colors.text,
-  },
-  body: {color: colors.muted, lineHeight: 19, marginTop: 12},
-  meta: {color: colors.purple, fontSize: 11, marginTop: 14},
 });

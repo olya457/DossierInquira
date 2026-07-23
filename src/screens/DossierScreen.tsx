@@ -120,7 +120,7 @@ export function DossierScreen() {
               multiline
               placeholder="Write your observation..."
               placeholderTextColor={colors.muted}
-              style={[s.input, {height: 110}]}
+              style={[s.input, s.noteInput]}
             />
             <GradientButton label="Save note" onPress={save} />
             <Pressable onPress={() => setModal(false)}>
@@ -133,6 +133,7 @@ export function DossierScreen() {
   );
 }
 const s = StyleSheet.create({
+  noteInput: {height: 110},
   tabs: {
     flexDirection: 'row',
     borderWidth: 1,

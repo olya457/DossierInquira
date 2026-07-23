@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useState} from 'react';
 import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import {Screen} from '../components/Screen';
@@ -6,17 +5,19 @@ import {AnimatedEntrance} from '../components/AnimatedEntrance';
 import {Card, Chip, GradientButton, Title} from '../components/ui';
 import {challenges} from '../data/challenges';
 import {colors} from '../theme/colors';
+import type {DailyScreenProps} from '../navigation/types';
 import {
-  COMPLETED_CHALLENGES_KEY,
-  CompletedChallenge,
-} from './CompletedChallengesScreen';
-export function DailyScreen({navigation}: any) {
+  readCompletedChallenges,
+  writeCompletedChallenges,
+} from '../services/storage/challengeStorage';
+import type {CompletedChallenge} from '../services/storage/challengeStorage';
+
+export function DailyScreen({navigation}: DailyScreenProps<'Daily'>) {
   const [text, setText] = useState('');
   const [done, setDone] = useState(false);
   const dailyChallenge = challenges[new Date().getDate() % challenges.length];
   const submitChallenge = async () => {
-    const stored = await AsyncStorage.getItem(COMPLETED_CHALLENGES_KEY);
-    const current: CompletedChallenge[] = stored ? JSON.parse(stored) : [];
+    const current = await readCompletedChallenges();
     const completed: CompletedChallenge = {
       ...dailyChallenge,
       response: text.trim(),
@@ -26,7 +27,7 @@ export function DailyScreen({navigation}: any) {
       completed,
       ...current.filter(item => item.id !== completed.id),
     ];
-    await AsyncStorage.setItem(COMPLETED_CHALLENGES_KEY, JSON.stringify(next));
+    await writeCompletedChallenges(next);
     setDone(true);
   };
   return (

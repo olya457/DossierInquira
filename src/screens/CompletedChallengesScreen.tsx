@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useCallback, useState} from 'react';
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
@@ -6,33 +5,33 @@ import {images} from '../assets';
 import {Screen} from '../components/Screen';
 import {Card, Chip, Subtitle, Title} from '../components/ui';
 import {colors} from '../theme/colors';
+import type {DailyScreenProps} from '../navigation/types';
+import {
+  readCompletedChallenges,
+  writeCompletedChallenges,
+} from '../services/storage/challengeStorage';
+import type {CompletedChallenge} from '../services/storage/challengeStorage';
 
-export const COMPLETED_CHALLENGES_KEY = 'dossier:completed-challenges';
-
-export type CompletedChallenge = {
-  id: string;
-  title: string;
-  difficulty: string;
-  description: string;
-  response: string;
-  completedAt: string;
-};
-
-export function CompletedChallengesScreen({navigation}: any) {
+export function CompletedChallengesScreen({
+  navigation,
+}: DailyScreenProps<'CompletedChallenges'>) {
   const [items, setItems] = useState<CompletedChallenge[]>([]);
 
   useFocusEffect(
     useCallback(() => {
-      AsyncStorage.getItem(COMPLETED_CHALLENGES_KEY)
-        .then(value => setItems(value ? JSON.parse(value) : []))
-        .catch(() => setItems([]));
+      readCompletedChallenges()
+        .then(setItems)
+        .catch(error => {
+          console.warn('Unable to restore completed challenges', error);
+          setItems([]);
+        });
     }, []),
   );
 
   const remove = async (id: string) => {
     const next = items.filter(item => item.id !== id);
     setItems(next);
-    await AsyncStorage.setItem(COMPLETED_CHALLENGES_KEY, JSON.stringify(next));
+    await writeCompletedChallenges(next);
   };
 
   return (
